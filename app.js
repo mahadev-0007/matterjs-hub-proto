@@ -39,10 +39,12 @@ app.get("/", async (req, res) => {
   res.send(response_data);
 });
 
-// TOGGLE FUNCTION the main feature of this server 🤯🤯🤯
-app.post("/toggle/", async (req, res) => {
+// CONTROL FUNCTION the main feature of this server 🤯🤯🤯
+app.post("/control/", async (req, res) => {
   let response = "";
   let device_num = req.body?.device ?? null;
+  let device_type = req.body?.type ?? null;
+  let level = req.body?.level ?? null;
 
   // first take device num from post req
   if (device_num != null) {
@@ -54,7 +56,7 @@ app.post("/toggle/", async (req, res) => {
     if (device) {
       try {
         // run my function 😉
-        response = await controllDevice(device);
+        response = await controllDevice(device, device_type, level);
       } catch (error) {
         // if not F offf 🖕🖕🖕🖕
         response = "Error controlling device";
