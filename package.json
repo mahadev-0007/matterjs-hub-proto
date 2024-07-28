@@ -1,0 +1,19 @@
+{
+  "name": "matter-server",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^4.19.2",
+    "@project-chip/matter-node-ble.js": "0.10.0-alpha.0-20240716-446c872f",
+    "@project-chip/matter-node.js": "0.10.0-alpha.0-20240716-446c872f",
+    "@project-chip/matter.js": "0.10.0-alpha.0-20240716-446c872f",
+    "@project-chip/matter.js-tools": "0.10.0-alpha.0-20240716-446c872f"
+  },
+  "type": "module"
+}
