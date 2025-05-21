@@ -8,7 +8,12 @@ import { AggregatorEndpoint } from "@project-chip/matter.js/endpoints/Aggregator
 import { BridgedNodeEndpoint } from "@project-chip/matter.js/endpoints/BridgedNodeEndpoint";
 import { ServerNode } from "@project-chip/matter.js/node";
 
+/**
+ * Initializes and starts a Matter server node with a bridged device
+ * @returns {Promise<string>} Empty string on successful startup
+ */
 export const startupFunc = async () => {
+  // Server configuration constants
   const uniqueId = "6969";
   const port = 5545;
   const passcode = 2022021;
@@ -19,6 +24,7 @@ export const startupFunc = async () => {
   const productName = `node-matter root node`;
   const productId = 0x8000;
 
+  // Create and configure the Matter server node
   const server = await ServerNode.create({
     // Required: Give the Node a unique ID which is used to store the state of this node
     id: uniqueId,
@@ -57,12 +63,12 @@ export const startupFunc = async () => {
     },
   });
 
+  // Create and add the aggregator endpoint
   const aggregator = new Endpoint(AggregatorEndpoint, { id: "aggregator" });
-
   await server.add(aggregator);
 
+  // Configure a bridged OnOff Socket device
   const name = `OnOff Socket 1`;
-
   const endpoint = new Endpoint(
     OnOffPlugInUnitDevice.with(BridgedDeviceBasicInformationServer),
     {
@@ -78,6 +84,7 @@ export const startupFunc = async () => {
   );
   await aggregator.add(endpoint);
 
+  // Set up device identification handlers
   endpoint.events.identify.startIdentifying.on(() => {
     console.log(
       `Run identify logic for ${name}, ideally blink a light every 0.5s ...`
@@ -88,11 +95,13 @@ export const startupFunc = async () => {
     console.log(`Stop identify logic for ${name} ...`);
   });
 
+  // Set up OnOff state change handler
   endpoint.events.onOff.onOff$Changed.on((value) => {
     executeCommand(value ? `on${i}` : `off${i}`);
     console.log(`${name} is now ${value ? "ON" : "OFF"}`);
   });
 
+  // Start the server
   await server.start();
   return "";
 };

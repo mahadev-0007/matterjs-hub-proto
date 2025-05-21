@@ -1,36 +1,38 @@
 import { OnOffCluster } from "@project-chip/matter.js/cluster";
 
+/**
+ * Controls an OnOff capable Matter device (e.g., light bulb, switch)
+ * @param {Object} device - The Matter device instance to control
+ * @returns {Promise<string>} A message indicating the new state of the device
+ */
 export const onOffControl = async (device) => {
   // OKAYY so i am lazy now but not tommorrow maybe....
   // I just added controll device of OnOff Device like light bulb, light bulb, light bulb or light bulb (I only know this thing)
 
-  // Get the cluster (I still dont know what it is please someone explain)
+  // Get the OnOff cluster client for the device
   const onOff = device.getClusterClient(OnOffCluster);
 
-  // if yes
+  // Verify device supports OnOff cluster
   if (onOff !== undefined) {
     try {
-      // What the light doing...
-      // is it on or off
-      // basically status checking
+      // Get current device state
       let onOffStatus = await onOff.getOnOffAttribute();
-      console.log("initial onOffStatus", onOffStatus);
+      console.log("Current device state:", onOffStatus);
 
-      // When I put this code
-      // this thing screamed whenever i manually change the light to on or off
-      // so like if you want to turn on the furry p when light is off or something this is the place
+      // Set up listener for state changes
+      // This allows tracking manual changes or changes from other controllers
       onOff.addOnOffAttributeListener((value) => {
-        console.log("subscription onOffStatus", value);
+        console.log("State change detected:", value);
         onOffStatus = value;
       });
 
-      // YASS ONNNN
+      // Toggle the device state
       await onOff.toggle();
-      // Basic maths or something
-      // to return the status
+
+      // Update and return the new state
       onOffStatus = !onOffStatus;
-      console.log("Toggled to ", onOffStatus);
-      const state = onOffStatus == true ? "ON" : "OFF";
+      console.log("New device state:", onOffStatus);
+      const state = onOffStatus ? "ON" : "OFF";
       return "Toggled to " + state;
     } catch (error) {
       console.error("Error occurred while toggling:", error);

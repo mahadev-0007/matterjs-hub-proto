@@ -1,13 +1,19 @@
-// I know 3 lines but smaller is better I guess
+/**
+ * Sets up and connects to all commissioned nodes in the Matter network
+ * @param {Object} commissioningController - The Matter commissioning controller instance
+ * @returns {Promise<Object>} The last connected node instance
+ */
 export const setupNodes = async (commissioningController) => {
-  // So commissioning controller actually know every nodes ever connected
+  // Retrieve all previously commissioned nodes from the controller
   const nodes = commissioningController.getCommissionedNodes();
-  console.log(nodes, "NODESS");
+  console.log("Available nodes:", nodes);
+
   let node = null;
+  // Attempt to connect to each commissioned node
   nodes.map(async (node_i) => {
-    node = await commissioningController.connectNode(node_i); // used 1 because I deleted one node without deleting mine so please change it to 0 or anything that corressponds to by default 0
+    node = await commissioningController.connectNode(node_i);
   });
-  // RETURNS THE NODEEEEE 🔥🔥🔥🔥🔥
-  console.log("NODEEEEEE", node);
+
+  console.log("Successfully connected to node:", node);
   return node;
 };
