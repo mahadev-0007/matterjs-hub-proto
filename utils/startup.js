@@ -1,12 +1,13 @@
-import { BridgedDeviceBasicInformationServer } from "@project-chip/matter.js/behaviors/bridged-device-basic-information";
-import { Cluster } from "@project-chip/matter.js/cluster";
-import { VendorId } from "@project-chip/matter.js/datatype";
-import { OnOffLightDevice } from "@project-chip/matter.js/devices/OnOffLightDevice";
-import { OnOffPlugInUnitDevice } from "@project-chip/matter.js/devices/OnOffPlugInUnitDevice";
-import { Endpoint } from "@project-chip/matter.js/endpoint";
-import { AggregatorEndpoint } from "@project-chip/matter.js/endpoints/AggregatorEndpoint";
-import { BridgedNodeEndpoint } from "@project-chip/matter.js/endpoints/BridgedNodeEndpoint";
-import { ServerNode } from "@project-chip/matter.js/node";
+import { BridgedDeviceBasicInformationServer } from "@matter/main/behaviors";
+// import { Cluster } from "@matter/main/clusters";
+import { VendorId } from "@matter/main/types";
+import { OnOffPlugInUnitDevice } from "@matter/main/devices";
+import { Endpoint } from "@matter/main/endpoints";
+import {
+  AggregatorEndpoint,
+  BridgedNodeEndpoint,
+} from "@matter/main/endpoints";
+import { ServerNode } from "@matter/main/node";
 
 /**
  * Initializes and starts a Matter server node with a bridged device

@@ -1,20 +1,15 @@
 import express from "express";
 
-// Matter.js platform registration
-import { registerNodePlatform } from "@project-chip/matter-node.js";
-registerNodePlatform();
-
-// Matter.js related imports
+// matter import
+import { Diagnostic, Environment, NodeId, StorageService } from "@matter/main";
 import { CommissioningController } from "@project-chip/matter.js";
-import { Environment } from "@project-chip/matter.js/environment";
 
+// custom function import
 import { getDevices } from "./utils/getDevices.js";
 import { controllDevice } from "./utils/controllDevice.js";
 import { setupNodes } from "./utils/setupNodes.js";
 import { commissionDevice } from "./utils/commisionDevice.js";
-import { startupFunc } from "./utils/startup.js";
 import { decommisionDevice } from "./utils/decommissionDevice.js";
-import { NodeId } from "@project-chip/matter.js/datatype";
 
 const app = express();
 app.use(express.json());
@@ -22,27 +17,42 @@ app.use(express.json());
 const port = 3000;
 
 const environment = Environment.default;
-const uniqueId = "2211"; // Unique identifier for the controller instance
+const uniqueId = "2211"; // an unique is for your controller it can be anything
+let node;
+const storageService = environment.get(StorageService);
+const controllerStorage = (
+  await storageService.open("controller")
+).createContext("data");
+const adminFabricLabel = "matter.js Controller";
 
-let node, server;
-
-// Initialize the CommissioningController with environment and platform info
+// This is the commission controller which have all access to the matter network so first need to initialise it in order to any thing with matter
 const commissioningController = new CommissioningController({
   environment: {
     environment,
     id: uniqueId,
   },
   autoConnect: false,
+  adminFabricLabel,
 });
 
 await commissioningController.start();
 
-node = await setupNodes(commissioningController);
-server = await startupFunc();
+// I dont know man i am better at breaking down code 😉
 
+node = await setupNodes(commissioningController);
+
+// This just returns all the device check the function it is just readable
 app.get("/", async (req, res) => {
-  let response_data = await getDevices(commissioningController);
-  res.send(response_data);
+  let nodes = commissioningController.getCommissionedNodes();
+  console.log(Diagnostic.json(nodes), "response_data");
+
+  const nodeDetails = commissioningController.getCommissionedNodesDetails();
+  console.log(
+    "Commissioned nodes details:",
+    Diagnostic.json(nodeDetails.find((node) => node.nodeId === nodes[0]))
+  );
+
+  res.send(Diagnostic.json(nodeDetails));
 });
 
 app.get("/discover/", async (req, res) => {
@@ -66,23 +76,32 @@ app.post("/commission/", async (req, res) => {
   }
 });
 
+// CONTROL FUNCTION the main feature of this server 🤯🤯🤯
 app.post("/control/", async (req, res) => {
   let response = "";
   let node_id = req.body?.node_id ?? null;
   let device_type = req.body?.type ?? null;
   let level = req.body?.level ?? null;
 
+  node_id = BigInt(node_id);
+
+  // first take device num from post req
   if (node_id != null) {
-    node_id = BigInt(node_id);
+    // then check if that thing even exists
     const node = commissioningController.getConnectedNode(NodeId(node_id));
+
+    // if sooooooo
     if (node) {
       try {
+        // run my function 😉
+        console.log(node.getDevices(), "DEvicess");
         response = await controllDevice(
           node.getDevices()[0],
           device_type,
           level
         );
       } catch (error) {
+        // if not F offf 🖕🖕🖕🖕
         response = "Error controlling device";
         console.error(error);
       }
@@ -93,6 +112,9 @@ app.post("/control/", async (req, res) => {
     response = "Device not provided";
   }
 
+  // AND TADAAAA ✨✨✨✨
+  // If the response is GOOD then it will say TOGGLED TO ON/OFF
+  // Hope you dont burn your house
   res.json({ response });
 });
 
@@ -100,10 +122,14 @@ app.post("/decommision/", async (req, res) => {
   let response = "";
   let device_num = req.body?.device ?? null;
 
+  // first take device num from post req
   if (device_num != null) {
+    // then check if that thing even exists
     try {
+      // run my function 😉
       response = await decommisionDevice(commissioningController, device_num);
     } catch (error) {
+      // if not F offf 🖕🖕🖕🖕
       response = "Error controlling device";
       console.error(error);
     }
@@ -114,5 +140,5 @@ app.post("/decommision/", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Matter Controller app listening on port ${port}`);
+  console.log(`Example app listening on port ${port}`);
 });

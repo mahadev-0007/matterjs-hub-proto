@@ -1,7 +1,4 @@
-import {
-  OnOffCluster,
-  LevelControlCluster,
-} from "@project-chip/matter.js/cluster";
+import { OnOffCluster, LevelControlCluster } from "@matter/main/clusters";
 import { onOffControl } from "./devices/onOff.js";
 import { onOffWithLevelControl } from "./devices/onOffWithLevel.js";
 import { response } from "express";

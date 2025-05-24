@@ -1,4 +1,4 @@
-import { OnOffCluster } from "@project-chip/matter.js/cluster";
+import { OnOffCluster } from "@matter/main/clusters";
 
 /**
  * Controls an OnOff capable Matter device (e.g., light bulb, switch)

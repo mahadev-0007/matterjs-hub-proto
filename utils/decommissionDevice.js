@@ -1,4 +1,4 @@
-import { NodeId } from "@project-chip/matter.js/datatype";
+import { NodeId } from "@matter/main/types";
 
 /**
  * Decommissions a Matter device from the network

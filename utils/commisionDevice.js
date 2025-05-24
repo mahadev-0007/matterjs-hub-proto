@@ -1,5 +1,5 @@
-import { GeneralCommissioning } from "@project-chip/matter.js/cluster";
-import { ManualPairingCodeCodec } from "@project-chip/matter.js/schema";
+import { GeneralCommissioning } from "@matter/main/clusters";
+import { ManualPairingCodeCodec } from "@matter/main/types";
 
 /**
  * Commissions a new Matter device into the network using a pairing code

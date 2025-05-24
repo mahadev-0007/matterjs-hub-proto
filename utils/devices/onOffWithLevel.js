@@ -1,7 +1,4 @@
-import {
-  OnOffCluster,
-  LevelControlCluster,
-} from "@project-chip/matter.js/cluster";
+import { OnOffCluster, LevelControlCluster } from "@matter/main/clusters";
 
 /**
  * Controls the level (e.g., brightness) of a Matter device that supports level control
